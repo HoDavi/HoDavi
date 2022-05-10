@@ -1,5 +1,4 @@
- opa, sou Davi, 14 anos, desenvolvedor.
-
+ opa
 
 
 - 💚 Atualmente estudando Front-End
