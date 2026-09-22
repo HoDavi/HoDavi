@@ -1,12 +1,9 @@
 <div align="center">
-  <img src="https://raw.githubusercontent.com/LeadPulse-Analytics/.github/main/profile/assets/leadpulse-wordmark.png" alt="LeadPulse Analytics" width="340" />
-  <h1>Davi</h1>
-  <p><strong>Fundador da LeadPulse Analytics</strong></p>
-  <p>Operações de ativação digital e receita</p>
+  <img src="https://raw.githubusercontent.com/LeadPulse-Analytics/.github/main/profile/assets/davi-engineering-header.svg" alt="Davi — Product Engineering" width="100%" />
   <p>
-    <a href="https://github.com/LeadPulse-Analytics">Organização</a>
+    <a href="https://github.com/LeadPulse-Analytics">LeadPulse Analytics</a>
     &nbsp;·&nbsp;
-    <a href="https://leadpulseanalytics.cloud/">Site institucional</a>
+    <a href="https://leadpulseanalytics.cloud/">Website</a>
     &nbsp;·&nbsp;
     <a href="https://instagram.com/leadpulse_">Instagram</a>
   </p>
@@ -14,10 +11,27 @@
 
 ---
 
-## Sobre
+## Building digital products that work in the real world
 
-Desenvolvimento de produtos digitais, experiências web e automações orientadas à operação e à receita.
+Founder of **LeadPulse Analytics**. I work across product engineering, customer journeys, and workflow automation—with attention to the operational details that make systems maintainable.
 
-## Tecnologias
+### Engineering focus
 
-JavaScript · HTML · CSS · Python
+| Focus | Toolkit |
+| --- | --- |
+| Product interfaces | TypeScript, JavaScript, React, Vite |
+| Interactive web | Three.js, GSAP, CSS |
+| Workflow automation | n8n, APIs, PostgreSQL, Supabase |
+
+### How I work
+
+- Start with the user's journey and the operational constraint.
+- Keep integrations observable and responsibilities clear.
+- Preserve version history and validate changes against evidence.
+- Prefer maintainable systems over unnecessary complexity.
+
+### Current direction
+
+Building conversion-oriented web experiences and automation systems that connect customer activity with reliable operations.
+
+<sub>Founder · Product engineering · Digital activation & revenue operations</sub>
