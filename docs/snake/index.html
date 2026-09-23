@@ -258,6 +258,8 @@
       let timer = null;
       let resizeObserver = null;
       let pointerStart = null;
+      let suppressClick = false;
+      let eatenCells = new Set();
       let toastTimer = null;
       let lastDrawScale = 1;
 
@@ -376,7 +378,7 @@
             ctx.fill();
           } else {
             roundedRect(px, py, cell, cell, 3);
-            ctx.fillStyle = "#1c704e";
+            ctx.fillStyle = eatenCells.has(point.x + "," + point.y) ? "rgba(28, 112, 78, .36)" : "#1c704e";
             ctx.fill();
           }
         });
@@ -478,6 +480,7 @@
         direction = { x: 1, y: 0 };
         queuedDirection = { x: 1, y: 0 };
         food = activeCells.map(function (point) { return { x: point.x, y: point.y }; });
+        eatenCells = new Set();
         collected = 0;
         scoreEl.textContent = "0";
         state = activeCells.length ? "ready" : "won";
@@ -517,18 +520,6 @@
         draw();
       }
 
-      function randomFreeCell() {
-        const occupied = new Set(snake.map(function (s) { return s.x + "," + s.y; }));
-        const candidates = [];
-        for (let y = 0; y < ROWS; y++) {
-          for (let x = 0; x < COLS; x++) {
-            const key = x + "," + y;
-            if (!occupied.has(key) && !food.some(function (f) { return f.x === x && f.y === y; })) candidates.push({ x: x, y: y });
-          }
-        }
-        return candidates.length ? candidates[Math.floor(Math.random() * candidates.length)] : null;
-      }
-
       function tick() {
         direction = queuedDirection;
         const head = { x: snake[0].x + direction.x, y: snake[0].y + direction.y };
@@ -549,7 +540,8 @@
 
         snake.unshift(head);
         if (willGrow) {
-          food.splice(foodIndex, 1);
+          const harvested = food.splice(foodIndex, 1)[0];
+          eatenCells.add(harvested.x + "," + harvested.y);
           collected += 1;
           scoreEl.textContent = String(collected);
           if (collected > best) {
@@ -565,8 +557,6 @@
             draw();
             return;
           }
-          const next = randomFreeCell();
-          if (next) food.push(next);
         } else {
           snake.pop();
         }
@@ -660,6 +650,7 @@
       });
       restartBtn.addEventListener("click", function () { resetGame(); beginGame(); });
       canvas.addEventListener("click", function () {
+        if (suppressClick) return;
         if (state === "ready" || state === "paused" || state === "won" || state === "over") beginGame();
         else if (state === "playing") pauseGame();
       });
@@ -672,8 +663,10 @@
         const dy = event.clientY - pointerStart.y;
         pointerStart = null;
         if (Math.max(Math.abs(dx), Math.abs(dy)) < 18) return;
+        suppressClick = true;
         if (Math.abs(dx) > Math.abs(dy)) setDirection(dx > 0 ? 1 : -1, 0);
         else setDirection(0, dy > 0 ? 1 : -1);
+        setTimeout(function () { suppressClick = false; }, 0);
       });
       window.addEventListener("keydown", handleKey);
       document.addEventListener("visibilitychange", function () {
