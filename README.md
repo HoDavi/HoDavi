@@ -30,6 +30,14 @@ Founder of **LeadPulse Analytics**. I work across product engineering, customer 
 - Preserve version history and validate changes against evidence.
 - Prefer maintainable systems over unnecessary complexity.
 
+## Contribution activity
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/HoDavi/HoDavi/output/github-contribution-grid-snake-dark.svg" />
+  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/HoDavi/HoDavi/output/github-contribution-grid-snake.svg" />
+  <img alt="Animated snake moving across Davi's GitHub contribution grid" width="100%" src="https://raw.githubusercontent.com/HoDavi/HoDavi/output/github-contribution-grid-snake.svg" />
+</picture>
+
 ### Current direction
 
 Building conversion-oriented web experiences and automation systems that connect customer activity with reliable operations.
