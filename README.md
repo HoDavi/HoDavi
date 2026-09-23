@@ -32,11 +32,18 @@ Founder of **LeadPulse Analytics**. I work across product engineering, customer 
 
 ## Contribution activity
 
+<a href="https://hodavi.github.io/HoDavi/snake/" title="Clique para jogar com seu mapa de contribuições">
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/HoDavi/HoDavi/output/github-contribution-grid-snake-dark.svg" />
   <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/HoDavi/HoDavi/output/github-contribution-grid-snake.svg" />
-  <img alt="Animated snake moving across Davi's GitHub contribution grid" width="100%" src="https://raw.githubusercontent.com/HoDavi/HoDavi/output/github-contribution-grid-snake.svg" />
+  <img alt="Abrir o jogo Snake de contribuições de Davi" width="100%" src="https://raw.githubusercontent.com/HoDavi/HoDavi/output/github-contribution-grid-snake.svg" />
 </picture>
+</a>
+
+<p align="center">
+  <a href="https://hodavi.github.io/HoDavi/snake/"><strong>▶ Clique na caixa para iniciar a cobrinha</strong></a>
+  &nbsp;·&nbsp; Setas ou WASD para jogar
+</p>
 
 ### Current direction
 
