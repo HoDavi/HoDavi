@@ -33,12 +33,12 @@ jobs:
           const fs = require("node:fs");
           const svg = fs.readFileSync("dist/github-contribution-grid-snake.svg", "utf8");
           const activeCells = [];
-          for (const match of svg.matchAll(/<rect\\b([^>]*)>/g)) {
+          for (const match of svg.matchAll(/<rect\b([^>]*)>/g)) {
             const attrs = match[1];
-            const className = (attrs.match(/\\bclass="([^"]+)"/) || [])[1] || "";
+            const className = (attrs.match(/\bclass="([^"]+)"/) || [])[1] || "";
             if (!/^c c[0-9]+$/.test(className)) continue;
-            const x = Number((attrs.match(/\\bx="([\\d.]+)"/) || [])[1]);
-            const y = Number((attrs.match(/\\by="([\\d.]+)"/) || [])[1]);
+            const x = Number((attrs.match(/\bx="([\d.]+)"/) || [])[1]);
+            const y = Number((attrs.match(/\by="([\d.]+)"/) || [])[1]);
             if (!Number.isFinite(x) || !Number.isFinite(y)) continue;
             activeCells.push({
               x: Math.round((x - 2) / 16),
@@ -54,7 +54,7 @@ jobs:
             rows: 7,
             activeCells
           };
-          fs.writeFileSync("dist/contributions.json", JSON.stringify(data, null, 2) + "\\n");
+          fs.writeFileSync("dist/contributions.json", JSON.stringify(data, null, 2) + "\n");
           console.log("Exported " + activeCells.length + " active contribution days.");
           NODE
 
