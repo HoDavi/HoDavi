@@ -1,4 +1,4 @@
-name: Generate contribution snake
+name: Generate contribution snake and game data
 
 on:
   schedule:
@@ -10,25 +10,65 @@ permissions:
 
 jobs:
   generate:
-    name: Generate and publish SVG
+    name: Generate profile contribution assets
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
       contents: write
     steps:
+      - name: Checkout profile sources
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+
       - name: Generate contribution snake
         uses: Platane/snk/svg-only@d8f6715049803e982ee5ff501b6b9b7d5deeb09b
         with:
-          github_user_name: ${{ github.repository_owner }}
+          github_user_name: \${{ github.repository_owner }}
           outputs: |
             dist/github-contribution-grid-snake.svg?palette=github-light&color_snake=%2358A6FF
             dist/github-contribution-grid-snake-dark.svg?palette=github-dark&color_snake=%2358A6FF
 
-      - name: Publish generated SVGs to output branch
+      - name: Export active contribution days
+        run: |
+          node <<'NODE'
+          const fs = require("node:fs");
+          const svg = fs.readFileSync("dist/github-contribution-grid-snake.svg", "utf8");
+          const activeCells = [];
+          for (const match of svg.matchAll(/<rect\\b([^>]*)>/g)) {
+            const attrs = match[1];
+            const className = (attrs.match(/\\bclass="([^"]+)"/) || [])[1] || "";
+            if (!/^c c[0-9]+$/.test(className)) continue;
+            const x = Number((attrs.match(/\\bx="([\\d.]+)"/) || [])[1]);
+            const y = Number((attrs.match(/\\by="([\\d.]+)"/) || [])[1]);
+            if (!Number.isFinite(x) || !Number.isFinite(y)) continue;
+            activeCells.push({
+              x: Math.round((x - 2) / 16),
+              y: Math.round((y - 2) / 16)
+            });
+          }
+          const data = {
+            schemaVersion: 1,
+            profile: "HoDavi",
+            source: "https://github.com/HoDavi",
+            updatedAt: new Date().toISOString(),
+            columns: 53,
+            rows: 7,
+            activeCells
+          };
+          fs.writeFileSync("dist/contributions.json", JSON.stringify(data, null, 2) + "\\n");
+          console.log("Exported " + activeCells.length + " active contribution days.");
+          NODE
+
+      - name: Add interactive game page
+        run: |
+          mkdir -p dist/snake
+          cp -R docs/snake/. dist/snake/
+          touch dist/.nojekyll
+
+      - name: Publish generated assets and game to output branch
         uses: crazy-max/ghaction-github-pages@1d6ee9b181a81033a16bd707a1401afa978daab4
         with:
           target_branch: output
           build_dir: dist
-          commit_message: "chore: update contribution snake"
+          commit_message: "chore: update contribution snake and game data"
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: \${{ secrets.GITHUB_TOKEN }}
