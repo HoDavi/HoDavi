@@ -22,7 +22,7 @@ jobs:
       - name: Generate contribution snake
         uses: Platane/snk/svg-only@d8f6715049803e982ee5ff501b6b9b7d5deeb09b
         with:
-          github_user_name: \${{ github.repository_owner }}
+          github_user_name: ${{ github.repository_owner }}
           outputs: |
             dist/github-contribution-grid-snake.svg?palette=github-light&color_snake=%2358A6FF
             dist/github-contribution-grid-snake-dark.svg?palette=github-dark&color_snake=%2358A6FF
@@ -71,4 +71,4 @@ jobs:
           build_dir: dist
           commit_message: "chore: update contribution snake and game data"
         env:
-          GITHUB_TOKEN: \${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
