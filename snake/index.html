@@ -1,0 +1,684 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0a0f18">
+  <meta name="description" content="Jogue Snake no mapa real de contribuições do perfil GitHub de Davi.">
+  <title>Contribution Garden — Davi</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #080d15;
+      --panel: rgba(17, 25, 38, .88);
+      --panel-edge: rgba(148, 163, 184, .16);
+      --text: #edf4ff;
+      --muted: #91a2b9;
+      --blue: #58a6ff;
+      --mint: #48e6a0;
+      --mint-soft: rgba(72, 230, 160, .14);
+      --violet: #9b8cff;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      overflow-x: hidden;
+      background:
+        radial-gradient(ellipse at 12% 0%, rgba(48, 105, 178, .20), transparent 38rem),
+        radial-gradient(ellipse at 95% 28%, rgba(50, 180, 132, .11), transparent 34rem),
+        var(--bg);
+      color: var(--text);
+    }
+    body::before {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      content: "";
+      opacity: .23;
+      pointer-events: none;
+      background-image: radial-gradient(rgba(185, 206, 235, .35) .7px, transparent .7px);
+      background-size: 28px 28px;
+      mask-image: linear-gradient(to bottom, black, transparent 88%);
+    }
+    .shell { width: min(1040px, calc(100% - 36px)); margin: 0 auto; padding: 38px 0 24px; }
+    .topline { display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom: 36px; }
+    .brand { display:flex; align-items:center; gap:11px; color: #d9e5f5; text-decoration:none; font-size:13px; font-weight:750; letter-spacing:.13em; text-transform:uppercase; }
+    .brand-mark { width:32px; height:32px; display:grid; place-items:center; border:1px solid rgba(88,166,255,.32); border-radius:10px; color:var(--blue); background:rgba(88,166,255,.09); box-shadow:0 0 24px rgba(88,166,255,.12); }
+    .brand-mark svg { width:18px; height:18px; }
+    .top-links { display:flex; align-items:center; gap:18px; }
+    .top-links a { color:var(--muted); font-size:13px; text-decoration:none; transition:color .18s ease; }
+    .top-links a:hover { color:var(--text); }
+    .eyebrow { display:inline-flex; align-items:center; gap:8px; color:#a6b7cc; font-size:11px; font-weight:750; letter-spacing:.16em; text-transform:uppercase; }
+    .live-dot { width:7px; height:7px; border-radius:50%; background:var(--mint); box-shadow:0 0 12px rgba(72,230,160,.8); }
+    h1 { margin:15px 0 9px; font-size:clamp(38px, 7vw, 68px); line-height:.99; letter-spacing:-.065em; font-weight:790; }
+    h1 span { color:transparent; background:linear-gradient(100deg, #eff7ff 5%, #9fc9ff 49%, #6df0b6 96%); background-clip:text; -webkit-background-clip:text; }
+    .intro { max-width:640px; margin:0; color:#a8b8cd; font-size:16px; line-height:1.65; }
+    .hero-row { display:flex; align-items:end; justify-content:space-between; gap:24px; margin-bottom:24px; }
+    .profile-link { flex:none; color:#bdd8ff; text-decoration:none; font-size:13px; border:1px solid rgba(119,165,220,.22); padding:10px 13px; border-radius:11px; background:rgba(13,22,35,.64); transition:background .18s ease, border-color .18s ease; }
+    .profile-link:hover { border-color:rgba(88,166,255,.58); background:rgba(88,166,255,.09); }
+    .game-card {
+      overflow:hidden;
+      border:1px solid var(--panel-edge);
+      border-radius:22px;
+      background:linear-gradient(145deg, rgba(19,29,44,.94), rgba(12,19,30,.93));
+      box-shadow:0 28px 90px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.035);
+    }
+    .card-head { display:flex; align-items:center; justify-content:space-between; gap:18px; padding:20px 22px 17px; border-bottom:1px solid rgba(148,163,184,.11); }
+    .card-title { display:flex; align-items:center; gap:11px; min-width:0; }
+    .flower { flex:none; display:grid; place-items:center; width:38px; height:38px; border-radius:12px; color:var(--mint); background:var(--mint-soft); }
+    .flower svg { width:21px; height:21px; }
+    .card-title strong { display:block; font-size:14px; letter-spacing:.01em; }
+    .card-title small { display:block; margin-top:4px; color:var(--muted); font-size:11px; }
+    .live-badge { display:inline-flex; align-items:center; gap:7px; color:#b3f5d4; border:1px solid rgba(72,230,160,.19); background:rgba(72,230,160,.07); border-radius:999px; padding:7px 10px; font-size:10px; letter-spacing:.09em; font-weight:760; text-transform:uppercase; white-space:nowrap; }
+    .game-area { padding:18px 18px 14px; }
+    .canvas-wrap {
+      position:relative;
+      overflow:hidden;
+      border:1px solid rgba(133,157,187,.19);
+      border-radius:15px;
+      background:#0a111b;
+      box-shadow:inset 0 0 36px rgba(9,18,29,.88);
+    }
+    canvas { display:block; width:100%; aspect-ratio:1000 / 250; min-height:118px; cursor:pointer; touch-action:none; outline:none; }
+    canvas:focus-visible { outline:2px solid var(--blue); outline-offset:-3px; border-radius:15px; }
+    .canvas-hint { position:absolute; left:50%; bottom:11px; transform:translateX(-50%); pointer-events:none; display:flex; align-items:center; gap:7px; color:#90a3bb; font-size:10px; letter-spacing:.035em; white-space:nowrap; background:rgba(7,13,21,.72); border:1px solid rgba(148,163,184,.1); padding:6px 9px; border-radius:999px; backdrop-filter:blur(6px); }
+    .kbd { padding:2px 5px; border:1px solid rgba(164,185,212,.18); border-radius:5px; color:#c9d7e8; background:rgba(149,170,197,.08); font:600 10px ui-monospace, SFMono-Regular, Menlo, monospace; }
+    .dashboard { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:14px; align-items:center; margin-top:14px; }
+    .status-line { display:flex; align-items:center; gap:10px; min-width:0; color:#c8d5e7; font-size:13px; }
+    .status-icon { display:grid; place-items:center; flex:none; width:27px; height:27px; border-radius:9px; color:var(--mint); background:rgba(72,230,160,.10); }
+    .status-icon svg { width:14px; height:14px; }
+    #status { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .actions { display:flex; gap:8px; }
+    button { font:inherit; cursor:pointer; }
+    .button { border:1px solid rgba(125,153,188,.21); border-radius:10px; padding:9px 13px; color:#dce9fa; background:rgba(110,137,174,.09); font-size:12px; font-weight:700; transition:transform .15s ease, border-color .15s ease, background .15s ease; }
+    .button:hover:not(:disabled) { transform:translateY(-1px); border-color:rgba(104,165,239,.48); background:rgba(88,166,255,.12); }
+    .button:disabled { cursor:not-allowed; opacity:.43; }
+    .button.primary { color:#07150f; background:linear-gradient(135deg, #7af0bb, #42d995); border-color:transparent; box-shadow:0 6px 20px rgba(41,196,128,.14); }
+    .button.primary:hover:not(:disabled) { background:linear-gradient(135deg, #98f5ca, #54e5a0); }
+    .meta-row { display:flex; flex-wrap:wrap; justify-content:space-between; gap:10px; padding:13px 3px 0; color:#7f91a9; font-size:10px; letter-spacing:.035em; }
+    .meta-row span { display:inline-flex; align-items:center; gap:6px; }
+    .meta-row b { color:#bdcadb; font-weight:650; }
+    .lower-grid { display:grid; grid-template-columns:1.2fr .8fr; gap:14px; margin-top:16px; }
+    .info-card { min-height:120px; border:1px solid rgba(148,163,184,.13); border-radius:16px; padding:17px 18px; background:rgba(13,20,31,.72); }
+    .info-label { margin:0 0 10px; color:#8798ae; font-size:10px; font-weight:760; letter-spacing:.13em; text-transform:uppercase; }
+    .stat-row { display:flex; align-items:baseline; gap:9px; }
+    .stat-number { font-size:26px; font-weight:780; letter-spacing:-.05em; }
+    .stat-caption { color:#9cacc1; font-size:12px; }
+    .legend { display:flex; flex-wrap:wrap; align-items:center; gap:8px 13px; color:#9cacc1; font-size:11px; }
+    .legend-item { display:inline-flex; align-items:center; gap:7px; }
+    .legend-swatch { width:11px; height:11px; border-radius:3px; background:rgba(148,163,184,.12); border:1px solid rgba(148,163,184,.14); }
+    .legend-swatch.active { background:#32cb88; box-shadow:0 0 12px rgba(50,203,136,.48); border-color:rgba(95,241,177,.7); }
+    .footnote { display:flex; justify-content:space-between; gap:16px; margin-top:21px; color:#73839a; font-size:11px; }
+    .footnote a { color:#91acd0; text-decoration:none; }
+    .footnote a:hover { color:#d1e4ff; }
+    .toast { position:fixed; left:50%; bottom:24px; transform:translate(-50%, 18px); padding:10px 14px; border:1px solid rgba(148,163,184,.2); border-radius:12px; color:#e4efff; background:rgba(14,22,34,.96); font-size:12px; opacity:0; pointer-events:none; transition:opacity .22s ease, transform .22s ease; box-shadow:0 16px 40px rgba(0,0,0,.32); }
+    .toast.show { opacity:1; transform:translate(-50%,0); }
+    @media (max-width:700px) {
+      .shell { width:min(100% - 22px, 1040px); padding-top:22px; }
+      .topline { margin-bottom:28px; }
+      .top-links { gap:12px; }
+      .top-links a:first-child { display:none; }
+      .hero-row { display:block; margin-bottom:19px; }
+      .profile-link { display:inline-flex; margin-top:17px; }
+      .card-head { padding:16px; }
+      .game-area { padding:12px; }
+      .dashboard { grid-template-columns:1fr; }
+      .actions { justify-content:flex-end; }
+      .lower-grid { grid-template-columns:1fr; }
+      .footnote { flex-direction:column; }
+      canvas { min-height:102px; }
+    }
+    @media (max-width:420px) {
+      .live-badge { font-size:9px; padding:6px 8px; }
+      .card-title small { max-width:170px; line-height:1.35; }
+      .canvas-hint { font-size:9px; }
+      .canvas-hint .desktop-hint { display:none; }
+      .canvas-hint .mobile-hint { display:inline; }
+    }
+    @media (min-width:421px) {
+      .canvas-hint .mobile-hint { display:none; }
+    }
+    @media (prefers-reduced-motion:reduce) {
+      *, *::before, *::after { scroll-behavior:auto !important; transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <nav class="topline" aria-label="Navegação principal">
+      <a class="brand" href="https://github.com/HoDavi" aria-label="Voltar ao perfil de Davi">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M5 17.8c3.7-1.2 7.5-4.8 8.6-9.7 2.3 2.3 3.1 5.7 1.6 8.4-1.3 2.5-4.5 3.7-7.3 2.5M13.2 8.1c-.8-1.9-.5-4.4 1.4-6.1 2.4 1.7 3.3 4.2 2.5 6.5M6 20.5c4.3-4 7.1-8 9.2-12.8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        <span>HODAVI <span style="color:#72839a">/ PLAYGROUND</span></span>
+      </a>
+      <div class="top-links">
+        <a href="https://github.com/LeadPulse-Analytics">LeadPulse Analytics</a>
+        <a href="https://github.com/HoDavi">Perfil GitHub ↗</a>
+      </div>
+    </nav>
+
+    <section class="hero-row" aria-labelledby="page-title">
+      <div>
+        <div class="eyebrow"><span class="live-dot"></span> Um jogo feito com sua atividade pública</div>
+        <h1 id="page-title"><span>Colha sua atividade.</span></h1>
+        <p class="intro">Uma serpente, seu jardim de contribuições e um desafio simples: percorra o mapa, colete os dias ativos e tente não cruzar o próprio caminho.</p>
+      </div>
+      <a class="profile-link" href="https://github.com/HoDavi#contribution-activity">Ver gráfico original no GitHub ↗</a>
+    </section>
+
+    <section class="game-card" aria-label="Jogo Snake do perfil de Davi">
+      <header class="card-head">
+        <div class="card-title">
+          <span class="flower" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M12 12c-2.6-5.8 1.9-9.5 3.6-7.8C17.3 6 14 10.3 12 12Zm0 0c1.2-6.3 7-7.2 7.7-4.9.7 2.3-4.1 4.3-7.7 4.9Zm0 0c5.8-2.6 9.5 1.9 7.8 3.6-1.8 1.7-6.1-1.6-7.8-3.6Zm0 0c6.3 1.2 7.2 7 4.9 7.7-2.3.7-4.3-4.1-4.9-7.7Zm0 0c-2.6 5.8-7.1 4.8-7.8 2.6-.7-2.3 4.2-4.6 7.8-2.6Zm0 0C5.7 13.2 4.8 7.4 7.1 6.7 9.4 6 11.4 10.8 12 12Z" stroke="currentColor" stroke-width="1.2"/><circle cx="12" cy="12" r="1.4" fill="currentColor"/></svg></span>
+          <span><strong>Contribution Garden</strong><small id="card-subtitle">Mapa real de atividade · 53 semanas</small></span>
+        </div>
+        <span class="live-badge"><span class="live-dot"></span><span id="feed-label">sincronizando</span></span>
+      </header>
+
+      <div class="game-area">
+        <div class="canvas-wrap">
+          <canvas id="board" tabindex="0" role="button" aria-label="Tabuleiro de contribuições. Clique para iniciar. Use as setas ou WASD para mover a serpente.">
+            Seu navegador não oferece suporte ao canvas.
+          </canvas>
+          <div class="canvas-hint" aria-hidden="true">
+            <span class="desktop-hint"><span class="kbd">←</span> <span class="kbd">↑</span> <span class="kbd">↓</span> <span class="kbd">→</span> mover</span>
+            <span class="mobile-hint">Toque no tabuleiro para jogar</span>
+            <span class="desktop-hint">·</span><span><span class="kbd">Space</span> pausar</span>
+          </div>
+        </div>
+        <div class="dashboard">
+          <div class="status-line" aria-live="polite">
+            <span class="status-icon" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none"><path d="M10 2.5v15m-5-10 5-5 5 5M5 13l5 5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <span id="status">Carregando o mapa de contribuições…</span>
+          </div>
+          <div class="actions">
+            <button id="restart" class="button" type="button" disabled>Reiniciar</button>
+            <button id="start" class="button primary" type="button" disabled>Carregando…</button>
+          </div>
+        </div>
+        <div class="meta-row">
+          <span>ATIVIDADE <b id="activity-total">—</b></span>
+          <span>COLHIDAS <b id="score">0</b></span>
+          <span>MELHOR <b id="best">0</b></span>
+          <span>CONTROLES <b>Setas / WASD · espaço pausa</b></span>
+        </div>
+      </div>
+    </section>
+
+    <section class="lower-grid" aria-label="Informações da partida">
+      <article class="info-card">
+        <h2 class="info-label">Mapa conectado</h2>
+        <div class="stat-row"><strong class="stat-number" id="map-count">—</strong><span class="stat-caption">dias com atividade no mapa atual</span></div>
+      </article>
+      <article class="info-card">
+        <h2 class="info-label">Como ler o jardim</h2>
+        <div class="legend"><span class="legend-item"><i class="legend-swatch"></i>Sem atividade</span><span class="legend-item"><i class="legend-swatch active"></i>Dia para colher</span></div>
+      </article>
+    </section>
+
+    <footer class="footnote">
+      <span id="updated">Aguardando sincronização do perfil…</span>
+      <span>Feito por Davi · <a href="https://github.com/HoDavi/HoDavi/actions/workflows/snake.yml">dados atualizados pelo GitHub Actions</a></span>
+    </footer>
+  </main>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    (function () {
+      "use strict";
+      const COLS = 53;
+      const ROWS = 7;
+      const W = 1000;
+      const H = 250;
+      const STEP_MS = 128;
+      const canvas = document.getElementById("board");
+      const ctx = canvas.getContext("2d");
+      const statusEl = document.getElementById("status");
+      const startBtn = document.getElementById("start");
+      const restartBtn = document.getElementById("restart");
+      const scoreEl = document.getElementById("score");
+      const bestEl = document.getElementById("best");
+      const totalEl = document.getElementById("activity-total");
+      const mapCountEl = document.getElementById("map-count");
+      const feedLabel = document.getElementById("feed-label");
+      const updatedEl = document.getElementById("updated");
+      const toastEl = document.getElementById("toast");
+      const months = ["SEP", "OCT", "NOV", "DEC", "JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP"];
+      const monthWeeks = [0, 4, 8, 13, 17, 21, 26, 30, 34, 39, 43, 47, 52];
+      let state = "loading";
+      let snake = [];
+      let direction = { x: 1, y: 0 };
+      let queuedDirection = { x: 1, y: 0 };
+      let food = [];
+      let activeCells = [];
+      let collected = 0;
+      let timer = null;
+      let resizeObserver = null;
+      let pointerStart = null;
+      let suppressClick = false;
+      let eatenCells = new Set();
+      let toastTimer = null;
+      let lastDrawScale = 1;
+
+      function safeBest() {
+        try { return Number(localStorage.getItem("hodavi-snake-best") || 0); }
+        catch (e) { return 0; }
+      }
+      let best = safeBest();
+      bestEl.textContent = String(best);
+
+      function showToast(message) {
+        toastEl.textContent = message;
+        toastEl.classList.add("show");
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(function () { toastEl.classList.remove("show"); }, 2200);
+      }
+
+      function roundedRect(x, y, w, h, r) {
+        ctx.beginPath();
+        if (typeof ctx.roundRect === "function") ctx.roundRect(x, y, w, h, r);
+        else {
+          const rr = Math.min(r, w / 2, h / 2);
+          ctx.moveTo(x + rr, y);
+          ctx.arcTo(x + w, y, x + w, y + h, rr);
+          ctx.arcTo(x + w, y + h, x, y + h, rr);
+          ctx.arcTo(x, y + h, x, y, rr);
+          ctx.arcTo(x, y, x + w, y, rr);
+          ctx.closePath();
+        }
+      }
+
+      function resizeCanvas() {
+        const rect = canvas.getBoundingClientRect();
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        const width = Math.max(300, rect.width);
+        const scale = width / W;
+        lastDrawScale = scale;
+        canvas.width = Math.round(width * dpr);
+        canvas.height = Math.round((H * scale) * dpr);
+        ctx.setTransform(dpr * scale, 0, 0, dpr * scale, 0, 0);
+        draw();
+      }
+
+      function draw() {
+        if (!ctx || !canvas.width) return;
+        const gradient = ctx.createLinearGradient(0, 0, W, H);
+        gradient.addColorStop(0, "#0d1923");
+        gradient.addColorStop(.53, "#0b131d");
+        gradient.addColorStop(1, "#0a1718");
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, W, H);
+
+        const haze = ctx.createRadialGradient(500, 125, 8, 500, 125, 460);
+        haze.addColorStop(0, "rgba(48, 120, 95, .12)");
+        haze.addColorStop(1, "rgba(10, 17, 27, 0)");
+        ctx.fillStyle = haze;
+        ctx.fillRect(0, 0, W, H);
+
+        const step = 16;
+        const cell = 11;
+        const gridW = (COLS - 1) * step + cell;
+        const originX = Math.round((W - gridW) / 2);
+        const originY = 76;
+
+        ctx.save();
+        ctx.font = "700 9px ui-monospace, SFMono-Regular, Menlo, monospace";
+        ctx.textBaseline = "middle";
+        ctx.fillStyle = "rgba(138, 158, 182, .55)";
+        ctx.textAlign = "left";
+        ctx.fillText("WEEKS", originX, 31);
+        ctx.textAlign = "right";
+        ctx.fillStyle = "rgba(123, 145, 168, .44)";
+        ctx.fillText("52", originX + gridW, 31);
+        ctx.textAlign = "left";
+        monthWeeks.forEach(function (week, i) {
+          const x = originX + week * step;
+          ctx.fillStyle = "rgba(155, 174, 196, .58)";
+          ctx.fillText(months[i], x, 53);
+        });
+
+        const rowNames = ["S", "M", "T", "W", "T", "F", "S"];
+        ctx.textAlign = "right";
+        ctx.font = "600 8px ui-monospace, SFMono-Regular, Menlo, monospace";
+        rowNames.forEach(function (name, y) {
+          ctx.fillStyle = "rgba(123, 145, 168, .45)";
+          ctx.fillText(name, originX - 10, originY + y * step + cell / 2 + 1);
+        });
+
+        for (let y = 0; y < ROWS; y++) {
+          for (let x = 0; x < COLS; x++) {
+            const px = originX + x * step;
+            const py = originY + y * step;
+            roundedRect(px, py, cell, cell, 3);
+            ctx.fillStyle = "rgba(117, 139, 164, .11)";
+            ctx.fill();
+            ctx.strokeStyle = "rgba(159, 183, 207, .075)";
+            ctx.lineWidth = .7;
+            ctx.stroke();
+          }
+        }
+
+        activeCells.forEach(function (point) {
+          const px = originX + point.x * step;
+          const py = originY + point.y * step;
+          const isFood = food.some(function (f) { return f.x === point.x && f.y === point.y; });
+          if (isFood) {
+            ctx.save();
+            ctx.shadowColor = "rgba(59, 237, 157, .84)";
+            ctx.shadowBlur = 14;
+            roundedRect(px - 1, py - 1, cell + 2, cell + 2, 4);
+            ctx.fillStyle = "#43e49d";
+            ctx.fill();
+            ctx.restore();
+            roundedRect(px + 2, py + 2, cell - 4, cell - 4, 2);
+            ctx.fillStyle = "#c2ffe3";
+            ctx.fill();
+          } else {
+            roundedRect(px, py, cell, cell, 3);
+            ctx.fillStyle = eatenCells.has(point.x + "," + point.y) ? "rgba(28, 112, 78, .36)" : "#1c704e";
+            ctx.fill();
+          }
+        });
+
+        food.forEach(function (point) {
+          const active = activeCells.some(function (cellPoint) { return cellPoint.x === point.x && cellPoint.y === point.y; });
+          if (!active) {
+            const px = originX + point.x * step;
+            const py = originY + point.y * step;
+            ctx.save();
+            ctx.shadowColor = "rgba(72,230,160,.92)";
+            ctx.shadowBlur = 13;
+            roundedRect(px + 1, py + 1, cell - 2, cell - 2, 4);
+            ctx.fillStyle = "#68f2b2";
+            ctx.fill();
+            ctx.restore();
+          }
+        });
+
+        snake.forEach(function (segment, i) {
+          const px = originX + segment.x * step;
+          const py = originY + segment.y * step;
+          const inset = i === 0 ? 0 : Math.min(2.3, .65 + i * .055);
+          const size = cell - inset * 2;
+          roundedRect(px + inset, py + inset, size, size, i === 0 ? 4 : 3);
+          if (i === 0) {
+            ctx.save();
+            ctx.shadowColor = "rgba(117, 197, 255, .78)";
+            ctx.shadowBlur = 11;
+            const headGradient = ctx.createLinearGradient(px, py, px + cell, py + cell);
+            headGradient.addColorStop(0, "#d4f0ff");
+            headGradient.addColorStop(.45, "#77c8ff");
+            headGradient.addColorStop(1, "#668cff");
+            ctx.fillStyle = headGradient;
+            ctx.fill();
+            ctx.restore();
+            const eyeSize = 1.25;
+            let eye1, eye2;
+            if (direction.x !== 0) {
+              const eyeX = px + (direction.x > 0 ? 7.8 : 2.1);
+              eye1 = [eyeX, py + 3.2]; eye2 = [eyeX, py + 7.8];
+            } else {
+              const eyeY = py + (direction.y > 0 ? 7.8 : 2.1);
+              eye1 = [px + 3.2, eyeY]; eye2 = [px + 7.8, eyeY];
+            }
+            ctx.fillStyle = "#092134";
+            [eye1, eye2].forEach(function (eye) {
+              ctx.beginPath(); ctx.arc(eye[0], eye[1], eyeSize, 0, Math.PI * 2); ctx.fill();
+            });
+          } else {
+            const alpha = Math.max(.42, .94 - i * .018);
+            ctx.fillStyle = "rgba(88, 166, 255, " + alpha.toFixed(2) + ")";
+            ctx.fill();
+            ctx.strokeStyle = "rgba(191, 228, 255, .11)";
+            ctx.lineWidth = .65;
+            ctx.stroke();
+          }
+        });
+
+        ctx.restore();
+
+        if (state === "ready" || state === "loading" || state === "error" || state === "won" || state === "over" || state === "paused") {
+          ctx.fillStyle = "rgba(5, 10, 17, .49)";
+          ctx.fillRect(0, 0, W, H);
+          const panelW = Math.min(420, W - 42);
+          const panelH = 74;
+          const panelX = (W - panelW) / 2;
+          const panelY = (H - panelH) / 2 + 4;
+          roundedRect(panelX, panelY, panelW, panelH, 14);
+          ctx.fillStyle = "rgba(13, 23, 35, .94)";
+          ctx.fill();
+          ctx.strokeStyle = "rgba(159, 192, 222, .18)";
+          ctx.lineWidth = 1;
+          ctx.stroke();
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          ctx.font = "750 15px ui-sans-serif, system-ui, sans-serif";
+          let title = "CLIQUE PARA COMEÇAR";
+          let subtitle = "A serpente está a postos";
+          if (state === "loading") { title = "SINCRONIZANDO O MAPA"; subtitle = "Buscando seus dias ativos no perfil público"; }
+          if (state === "error") { title = "MAPA INDISPONÍVEL"; subtitle = "Recarregue a página para tentar novamente"; }
+          if (state === "paused") { title = "PARTIDA PAUSADA"; subtitle = "Clique ou pressione espaço para continuar"; }
+          if (state === "won") { title = "JARDIM COLHIDO"; subtitle = "Você percorreu todos os dias ativos do mapa"; }
+          if (state === "over") { title = "FIM DE JOGO"; subtitle = "A serpente cruzou o próprio caminho"; }
+          ctx.fillStyle = state === "error" ? "#ffbfaa" : "#eaf4ff";
+          ctx.fillText(title, W / 2, panelY + 27);
+          ctx.fillStyle = "#94a8bf";
+          ctx.font = "500 11px ui-sans-serif, system-ui, sans-serif";
+          ctx.fillText(subtitle, W / 2, panelY + 50);
+        }
+      }
+
+      function setStatus(message) { statusEl.textContent = message; }
+
+      function resetGame() {
+        clearInterval(timer);
+        timer = null;
+        snake = [{ x: 1, y: 3 }, { x: 0, y: 3 }];
+        direction = { x: 1, y: 0 };
+        queuedDirection = { x: 1, y: 0 };
+        food = activeCells.map(function (point) { return { x: point.x, y: point.y }; });
+        eatenCells = new Set();
+        collected = 0;
+        scoreEl.textContent = "0";
+        state = activeCells.length ? "ready" : "won";
+        if (!activeCells.length) setStatus("Seu mapa está sem dias ativos para colher.");
+        else setStatus("Clique no tabuleiro para iniciar. Cada célula verde representa um dia ativo.");
+        startBtn.disabled = !activeCells.length;
+        restartBtn.disabled = !activeCells.length;
+        startBtn.textContent = "Iniciar partida";
+        draw();
+      }
+
+      function beginGame() {
+        if (!activeCells.length || state === "loading" || state === "error") return;
+        if (state === "won" || state === "over") resetGame();
+        if (state === "playing") return;
+        if (state === "paused") {
+          state = "playing";
+          setStatus("Em movimento · use as setas ou WASD para colher as células verdes.");
+        } else {
+          state = "playing";
+          setStatus("Em movimento · use as setas ou WASD para colher as células verdes.");
+        }
+        startBtn.textContent = "Pausar";
+        clearInterval(timer);
+        timer = setInterval(tick, STEP_MS);
+        canvas.focus({ preventScroll: true });
+        draw();
+      }
+
+      function pauseGame() {
+        if (state !== "playing") return;
+        clearInterval(timer);
+        timer = null;
+        state = "paused";
+        startBtn.textContent = "Continuar";
+        setStatus("Partida pausada.");
+        draw();
+      }
+
+      function tick() {
+        direction = queuedDirection;
+        const head = { x: snake[0].x + direction.x, y: snake[0].y + direction.y };
+        head.x = (head.x + COLS) % COLS;
+        head.y = (head.y + ROWS) % ROWS;
+
+        const foodIndex = food.findIndex(function (point) { return point.x === head.x && point.y === head.y; });
+        const willGrow = foodIndex !== -1;
+        const bodyToCheck = willGrow ? snake : snake.slice(0, -1);
+        if (bodyToCheck.some(function (segment) { return segment.x === head.x && segment.y === head.y; })) {
+          clearInterval(timer); timer = null; state = "over";
+          startBtn.textContent = "Tentar novamente";
+          setStatus("Fim de jogo. Você colheu " + collected + " de " + activeCells.length + " dias ativos.");
+          showToast("A serpente encontrou a própria cauda.");
+          draw();
+          return;
+        }
+
+        snake.unshift(head);
+        if (willGrow) {
+          const harvested = food.splice(foodIndex, 1)[0];
+          eatenCells.add(harvested.x + "," + harvested.y);
+          collected += 1;
+          scoreEl.textContent = String(collected);
+          if (collected > best) {
+            best = collected;
+            bestEl.textContent = String(best);
+            try { localStorage.setItem("hodavi-snake-best", String(best)); } catch (e) {}
+          }
+          if (!food.length) {
+            clearInterval(timer); timer = null; state = "won";
+            startBtn.textContent = "Jogar de novo";
+            setStatus("Jardim colhido: " + collected + (collected === 1 ? " dia ativo." : " dias ativos."));
+            showToast("Você colheu todo o mapa de contribuições.");
+            draw();
+            return;
+          }
+        } else {
+          snake.pop();
+        }
+
+        if (collected === 0 && food.length && snake.length < 3) {
+          setStatus("Siga o brilho verde. As bordas do mapa se conectam.");
+        }
+        draw();
+      }
+
+      function setDirection(x, y) {
+        if (state === "loading" || state === "error" || !activeCells.length) return;
+        if (state === "ready" || state === "paused") beginGame();
+        if (state === "won" || state === "over") { resetGame(); beginGame(); }
+        if (x === -direction.x && y === -direction.y) return;
+        queuedDirection = { x: x, y: y };
+      }
+
+      function handleKey(event) {
+        const key = event.key.toLowerCase();
+        const directions = {
+          arrowup: [0, -1], w: [0, -1],
+          arrowdown: [0, 1], s: [0, 1],
+          arrowleft: [-1, 0], a: [-1, 0],
+          arrowright: [1, 0], d: [1, 0]
+        };
+        if (directions[key]) {
+          event.preventDefault();
+          setDirection(directions[key][0], directions[key][1]);
+          return;
+        }
+        if (event.code === "Space" && (state === "playing" || state === "paused")) {
+          event.preventDefault();
+          if (state === "playing") pauseGame(); else beginGame();
+        } else if (key === "r" && activeCells.length) {
+          resetGame();
+          beginGame();
+        } else if ((key === "enter" || key === " ") && (state === "ready" || state === "won" || state === "over")) {
+          if (key === " ") event.preventDefault();
+          beginGame();
+        }
+      }
+
+      function setMap(data) {
+        if (!data || data.schemaVersion !== 1 || !Array.isArray(data.activeCells) || data.columns !== COLS || data.rows !== ROWS) {
+          throw new Error("Formato do mapa inválido");
+        }
+        activeCells = data.activeCells.filter(function (point) {
+          return Number.isInteger(point.x) && Number.isInteger(point.y) && point.x >= 0 && point.x < COLS && point.y >= 0 && point.y < ROWS;
+        });
+        totalEl.textContent = String(activeCells.length);
+        mapCountEl.textContent = String(activeCells.length);
+        feedLabel.textContent = "mapa conectado";
+        feedLabel.previousElementSibling.style.background = "#48e6a0";
+        feedLabel.previousElementSibling.style.boxShadow = "0 0 12px rgba(72,230,160,.8)";
+        if (data.updatedAt) {
+          const date = new Date(data.updatedAt);
+          updatedEl.textContent = "Mapa atualizado em " + new Intl.DateTimeFormat("pt-BR", { dateStyle: "medium", timeStyle: "short" }).format(date);
+        } else updatedEl.textContent = "Mapa público de contribuições · atualizado automaticamente";
+        if (activeCells.length) {
+          setStatus("Mapa carregado. Clique no tabuleiro para iniciar a partida.");
+          resetGame();
+        } else {
+          state = "won";
+          setStatus("O mapa sincronizou, mas não há dias ativos para colher.");
+          startBtn.disabled = true;
+          restartBtn.disabled = true;
+          draw();
+        }
+      }
+
+      async function loadMap() {
+        try {
+          const response = await fetch("../contributions.json", { cache: "no-store" });
+          if (!response.ok) throw new Error("Não foi possível abrir contributions.json");
+          setMap(await response.json());
+        } catch (error) {
+          state = "error";
+          feedLabel.textContent = "sem conexão";
+          feedLabel.previousElementSibling.style.background = "#ff9f87";
+          feedLabel.previousElementSibling.style.boxShadow = "0 0 12px rgba(255,159,135,.7)";
+          setStatus("Não foi possível carregar o mapa. Atualize a página para tentar novamente.");
+          updatedEl.textContent = "A fonte de contribuições não respondeu.";
+          draw();
+        }
+      }
+
+      startBtn.addEventListener("click", function () {
+        if (state === "playing") pauseGame();
+        else beginGame();
+      });
+      restartBtn.addEventListener("click", function () { resetGame(); beginGame(); });
+      canvas.addEventListener("click", function () {
+        if (suppressClick) return;
+        if (state === "ready" || state === "paused" || state === "won" || state === "over") beginGame();
+        else if (state === "playing") pauseGame();
+      });
+      canvas.addEventListener("pointerdown", function (event) {
+        pointerStart = { x: event.clientX, y: event.clientY };
+      });
+      canvas.addEventListener("pointerup", function (event) {
+        if (!pointerStart || state !== "playing") { pointerStart = null; return; }
+        const dx = event.clientX - pointerStart.x;
+        const dy = event.clientY - pointerStart.y;
+        pointerStart = null;
+        if (Math.max(Math.abs(dx), Math.abs(dy)) < 18) return;
+        suppressClick = true;
+        if (Math.abs(dx) > Math.abs(dy)) setDirection(dx > 0 ? 1 : -1, 0);
+        else setDirection(0, dy > 0 ? 1 : -1);
+        setTimeout(function () { suppressClick = false; }, 0);
+      });
+      window.addEventListener("keydown", handleKey);
+      document.addEventListener("visibilitychange", function () {
+        if (document.hidden && state === "playing") pauseGame();
+      });
+      if ("ResizeObserver" in window) {
+        resizeObserver = new ResizeObserver(resizeCanvas);
+        resizeObserver.observe(canvas);
+      } else window.addEventListener("resize", resizeCanvas);
+      resizeCanvas();
+      loadMap();
+    }());
+  </script>
+</body>
+</html>
